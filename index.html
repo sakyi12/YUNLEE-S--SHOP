@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YUNLEE'S SHOP OF AFFORDABLE PRODUCT</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#e8f5e9}
+header{background:#1b5e20;color:white;padding:12px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:100}
+.logo{font-weight:900;color:#a5d6a7;font-size:20px;white-space:nowrap}
+.search-box{flex:1;display:flex;max-width:700px}.search-box input{flex:1;padding:11px;border:none;border-radius:4px 0 0 4px;outline:none;font-size:14px}.search-box button{background:#43a047;color:white;border:none;padding:0 16px;border-radius:0 4px 4px 0;font-weight:bold;cursor:pointer}
+.cart-btn{background:#2e7d32;color:white;border:1px solid #a5d6a7;padding:8px 14px;border-radius:4px;cursor:pointer}
+.cat-bar{background:#2e7d32;color:white;padding:8px 10px;display:flex;gap:8px;overflow-x:auto;font-size:12px;white-space:nowrap}.cat-bar span{cursor:pointer;background:#388e3c;padding:6px 12px;border-radius:20px;border:1px solid #66bb6a}
+.banner{background:#c8e6c9;border:1px solid #43a047;padding:10px;text-align:center;font-size:12px;font-weight:bold;color:#1b5e20}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;padding:12px;max-width:1400px;margin:auto}
+.card{background:white;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.15);display:flex;flex-direction:column;border:1px solid #a5d6a7}.card img{width:100%;height:180px;object-fit:cover;background:#f5f5f5;display:block}
+.info{padding:10px;flex:1}.info h4{font-size:13px;line-height:15px;height:32px;overflow:hidden;margin-bottom:4px}.price{color:#1b5e20;font-weight:900;font-size:18px}.old{color:gray;text-decoration:line-through;font-size:12px;margin-left:6px}
+.cat{font-size:10px;background:#e8f5e9;color:#0f5dc0;padding:3px 7px;border-radius:4px;display:inline-block;margin-bottom:4px}.stock{font-size:11px;color:#2e7d32;margin-top:4px;font-weight:bold}
+.card button{background:#43a047;color:white;border:1px solid #2e7d32;padding:9px;border-radius:20px;margin:10px;font-size:13px;font-weight:bold;cursor:pointer}.card button:hover{background:#1b5e20}
+#cartModal{display:none;position:fixed;top:0;right:0;width:400px;max-width:95%;height:100%;background:white;z-index:300;padding:18px;overflow-y:auto;border-left:4px solid #2e7d32}#overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:250}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">YUNLEE'S SHOP</div>
+<div class="search-box"><input id="searchInput" placeholder="Search affordable products..." oninput="render()"><button onclick="render()">🔍 Search</button></div>
+<button class="cart-btn" onclick="openCart()">🛒 Cart <span id="cartCount" style="background:#a5d6a7;color:#000;padding:2px 8px;border-radius:12px;font-weight:bold">0</span></button>
+</header>
+<div class="cat-bar">
+<span onclick="filterCat('All')">All Products</span><span onclick="filterCat('Clothes')">👕 Clothes</span><span onclick="filterCat('Phones')">📱 Phones</span><span onclick="filterCat('Motorcycle')">🏍️ Cars/Bikes</span><span onclick="filterCat('Equipment')">🔧 Tools</span><span onclick="filterCat('Toys')">🧸 Toys</span>
+</div>
+<div class="banner">✅ YUNLEE'S SHOP OF AFFORDABLE PRODUCT | All Prices in GH₵ | Green Interface</div>
+<div class="grid" id="catalog"></div>
+<div id="overlay" onclick="closeCart()"></div>
+<div id="cartModal">
+<h2>Shopping Cart</h2><div id="cartItems" style="margin-top:12px"></div><h2 id="total" style="margin:16px 0">Total: GH₵0</h2>
+<button onclick="checkout()" style="width:100%;background:#2e7d32;color:white;padding:13px;border:none;border-radius:8px;font-weight:900;cursor:pointer">Proceed to Checkout</button>
+<button onclick="closeCart()" style="width:100%;background:#e8f5e9;padding:10px;border:1px solid #a5d6a7;border-radius:8px;margin-top:10px;cursor:pointer">Continue Shopping</button>
+<p id="hours" style="font-size:11px;color:gray;margin-top:12px"></p>
+</div>
+<script>
+let product_name = ["BMW M1000 R STREETFIGHTER","iPhone 16 Blue Colour","Richard Mille Watch","German Shepherd Dog","Professional Electric Engraving Hair Clipper","Bohemian Style Black Belt with Vintage Oval Cut-out Buckle","Tribal Jacket","MERCEDES C400","iPhone 17","Vintage Sweater Grey","Toraja Jeans Blue","Batik Kimono Women","Winter Jacket Black","Crop Top Batik","Oversized Tee White","iPhone 15 Pro Max 256GB","Samsung Galaxy S23 Ultra","Tecno Camon 20 Pro","Infinix Hot 40 Pro","Itel S23 Plus","Nokia 105 Classic","Samsung A54 5G","iPhone 14 Case Batik","Power Bank 30000mAh","Wireless Earbuds Pro","Google Pixel 8","Honda Beat 110cc Scooter","Yamaha NMAX 155cc","BMW M7","Yamaha R15 Sport Bike","Samsung S23 Ultra","iPhone 18 Pro Max","Honda CBR 500R Sport","Xiaomi Electric Scooter","Apple MacBook Pro M3","Mountain Bike MTB Red","Drill Machine Bosch 500W","Hammer Tool Set Steel","Toolbox Large Metal","Jordan 15","PS5 Slim","Nike Air Force 1","Football Boot","Lego House Set 200pcs","BMX Bike","Puzzle Map Toraja","Mens Suit Formal Black - Premium","Brown Leather Boots","Traveling Bag","Backpack Toraja Black","BMW M5","Bluetooth Speaker JBL"];
+let product_price = [18500,7500,85000,2500,450,85,120,185000,8200,42,36,45,75,16,20,899,799,185,145,99,22,299,25,35,45,599,850,1850,125000,2400,1299,1899,4200,650,15500,220,125,18,38,350,3800,180,350,280,35,650,10,250,62,280,38,65000,48];
+let product_category = ["Motorcycle","Phones","Clothes","Toys","Equipment","Clothes","Clothes","Motorcycle","Phones","Clothes","Clothes","Clothes","Clothes","Clothes","Clothes","Phones","Phones","Phones","Phones","Phones","Phones","Phones","Motorcycle","Motorcycle","Motorcycle","Motorcycle","Motorcycle","Motorcycle","Motorcycle","Motorcycle","Phones","Phones","Equipment","Equipment","Equipment","Equipment","Equipment","Toys","Clothes","Toys","Clothes","Toys","Toys","Toys","Clothes","Clothes","Shoes","Bags","Bags","Motorcycle","Home"];
+let product_stock = [2,10,3,5,25,50,20,1,8,22,25,15,10,40,20,5,8,20,18,30,200,15,100,40,80,9,6,4,1,3,5,2,2,8,3,12,12,70,25,40,20,15,60,30,30,18,100,30,40,35,20,1,30];
+let product_image = [
+"https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1592899677977-9bb10ba128a5?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1610945264803-c22b62d2a7b3?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1592899677977-9bb10ba128a5?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1610945264803-c22b62d2a7b3?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1592899677977-9bb10ba128a5?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1610945264803-c22b62d2a7b3?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1523369364227-24988434a4d2?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&q=70",
+"https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=400&fit=crop&q=80",
+"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop&q=70"
+];
+let cart_id=[], cart_qty=[], user_hours=[0], currentFilter="All";
+setInterval(()=>{user_hours[0]++; let el=document.getElementById("hours"); if(el) el.innerText="Browsing: "+user_hours[0]+"s | "+product_name.length+" products | GH₵";},1000);
+function render(){
+  let search=document.getElementById("searchInput").value.toLowerCase();
+  let html="";
+  for(let i=0;i<product_name.length;i++){
+    if(currentFilter!="All" && product_category[i]!=currentFilter) continue;
+    if(search &&!product_name[i].toLowerCase().includes(search) &&!product_category[i].toLowerCase().includes(search)) continue;
+    let oldPrice=(product_price[i]*1.6).toFixed(0);
+    html+=`<div class="card">
+      <img src="${product_image[i]}" loading="eager" alt="${product_name[i]}" onerror="this.onerror=null; this.src='https://picsum.photos/seed/${i}/400/400'">
+      <div class="info">
+        <span class="cat">${product_category[i]}</span>
+        <h4>[${i}] ${product_name[i]}</h4>
+        <p class="price">GH₵${product_price[i].toLocaleString()}<span class="old">GH₵${oldPrice}</span></p>
+        <p class="stock">✅ In Stock: ${product_stock[i]} | ID: ${i} | ★ 4.8</p>
+      </div>
+      <button onclick="addToCart(${i})">Add to Cart</button>
+    </div>`;
+  }
+  document.getElementById("catalog").innerHTML=html;
+}
+function addToCart(id){
+  if(product_stock[id]<=0){alert("Out of stock! stock["+id+"]=0");return;}
+  let idx=cart_id.indexOf(id);
+  if(idx>=0) cart_qty[idx]++; else {cart_id.push(id); cart_qty.push(1);}
+  product_stock[id]--; updateCart(); render();
+}
+function updateCart(){
+  let total=0,cnt=0,html="";
+  for(let i=0;i<cart_id.length;i++){
+    let id=cart_id[i]; total+=product_price[id]*cart_qty[i]; cnt+=cart_qty[i];
+    html+=`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;font-size:13px"><div><b>${product_name[id]}</b><br>Qty: ${cart_qty[i]} @ GH₵${product_price[id]}</div><div style="text-align:right">GH₵${(product_price[id]*cart_qty[i]).toLocaleString()} <button onclick="removeCart(${i})" style="background:#c62828;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer">x</button></div></div>`;
+  }
+  document.getElementById("cartCount").innerText=cnt;
+  document.getElementById("cartItems").innerHTML=html||"<p style='padding:20px;text-align:center;color:gray'>Cart is empty<br>Add items!</p>";
+  document.getElementById("total").innerText="Total: GH₵"+total.toLocaleString();
+}
+function removeCart(i){product_stock[cart_id[i]]+=cart_qty[i]; cart_id.splice(i,1); cart_qty.splice(i,1); updateCart(); render();}
+function filterCat(c){currentFilter=c; render();}
+function openCart(){document.getElementById("cartModal").style.display="block";document.getElementById("overlay").style.display="block";}
+function closeCart(){document.getElementById("cartModal").style.display="none";document.getElementById("overlay").style.display="none";}
+function checkout(){if(cart_id.length==0){alert("Cart empty!");return;} alert("✅ ORDER PLACED! Total: "+document.getElementById("total").innerText+" | Browsed: "+user_hours[0]+"s"); cart_id=[];cart_qty=[];updateCart();closeCart();}
+render();
+</script>
+</body>
+</html>
